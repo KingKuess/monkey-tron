@@ -10,7 +10,6 @@ import threading
 from discord_buttons_plugin import *
 import pytz
 from datetime import date, datetime
-from keep_alive import keep_alive
 import sys
 from dotenv import load_dotenv
 
@@ -562,5 +561,4 @@ async def button_20(ctx):
     await ctx.reply("The Scrim: "+currentKey+" Has Been Cancelled!", flags=MessageFlags.EPHEMERAL)
     await ctx.message.delete()
 
-keep_alive()
 bot.run(os.getenv('token'))

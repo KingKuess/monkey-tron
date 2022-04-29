@@ -3,12 +3,12 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                sh 'docker build . -t monkey-tron:py'
+                sh 'sudo docker build . -t monkey-tron:py'
             }
         }
         stage('Run') {
             steps {
-                sh 'docker run --rm monkey-tron:py'
+                sh 'sudo docker run --rm monkey-tron:py'
             }
         }
     }

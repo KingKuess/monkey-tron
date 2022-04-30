@@ -8,7 +8,9 @@ pipeline {
         }
         stage('Run') {
             steps {
-                sh 'sudo docker run --env-file .env --rm monkey-tron:py'
+                withCredentials([string(credentialsId: 'token', variable: 'token')]) {
+                    sh 'sudo docker run --rm monkey-tron:py -e token=$token'
+                }
             }
         }
     }

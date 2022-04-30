@@ -9,8 +9,8 @@ pipeline {
         stage('Remove Previous Container') {
             steps {
                 sh '''
-                if docker ps | grep -q monkeytron-''' + env.BRANCH_NAME + '''; then
-                    docker rm monkeytron-''' + env.BRANCH_NAME + '''
+                if sudo docker ps | grep -q monkeytron-''' + env.BRANCH_NAME + '''; then
+                    sudo docker rm -f monkeytron-''' + env.BRANCH_NAME + '''
                 fi'''
             }
         }

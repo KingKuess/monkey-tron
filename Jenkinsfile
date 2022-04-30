@@ -8,7 +8,7 @@ pipeline {
         }
         stage('Run') {
             steps {
-                sh 'sudo docker run --rm monkey-tron:py'
+                sh 'sudo docker run --env-file /home/jenkins/.env --rm monkey-tron:py'
             }
         }
     }

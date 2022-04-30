@@ -9,7 +9,7 @@ pipeline {
         stage('Run') {
             steps {
                 withCredentials([string(credentialsId: 'token', variable: 'token')]) {
-                    sh 'sudo docker run --rm monkey-tron:py -e token=$token'
+                    sh 'sudo docker run -e token=$token --rm monkey-tron:py '
                 }
             }
         }

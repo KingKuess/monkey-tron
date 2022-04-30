@@ -1,5 +1,6 @@
 import asyncio
 from inspect import Arguments
+import re
 import discord
 from discord import flags
 from discord.ext import commands, tasks
@@ -60,14 +61,26 @@ async def cancel(ctx):
 @bot.command(pass_context=True, name="scrim")
 async def scrim(ctx):
     time.time()
-    commandArgs = ctx.message.content.split(' ')
+    commandArgs = ctx.message.clean_content.split(' ')
+    if len(ctx.message.mentions) == 0 and len(ctx.message.role_mentions) == 0:
+        await ctx.message.channel.send(
+            'Invalid Arguments, No mentioned roles. Format is +scrim [HH:MM] [message + mentions]   ex. "+scrim 21:00 big dogs @Gorilla" note: time is always same day EST')
+        return
+
     try:
         sTime = commandArgs[1]
         sMessage = " ".join(commandArgs[2:])
     except:
         await ctx.message.channel.send(
-            'Invalid Arguments please try again, note: time is always PM EST . Format is +scrim [time] [message]')
+            'Invalid Arguments, Invalid number of arguments. Format is +scrim [HH:MM] [message + mentions]   ex. "+scrim 21:00 big dogs @Gorilla" note: time is always same day EST')
         return
+    
+    
+    if not bool(re.search('(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9])', sTime)):
+        await ctx.message.channel.send(
+            'Invalid Arguments, time in wrong format. Format is +scrim [HH:MM] [message + mentions]   ex. "+scrim 21:00 big dogs @Gorilla" note: time is always same day EST')
+        return
+
 
     await ctx.message.add_reaction('✅')
     await ctx.message.add_reaction('❌')
@@ -98,48 +111,35 @@ tasksDict = {
 ctxDict = {}
 
 
-@bot.command(pass_context=True)
-async def addChannelMap(ctx):
-    command = ctx.message.content.replace("addChannelMap ", "")
-    channel = command.split('-')[0]
-    role = command.split('-')[1]
-
-
 async def createScrimEvent(sTime, text, ctx):
     t = asyncio.get_event_loop().create_task(eventHandler(sTime, text, ctx))
     tasksDict[text + " @ " + sTime] = t
     ctxDict[text + " @ " + sTime] = ctx
 
 
-channelRoleMap = {"653067871743901701": "653049222437797911",
-                  "728078391483301898": "653049223679574047",
-                  "830862552463310868": "830863525789564980",
-                  "877689351218298880": "797272635615870976"}
 
 
 async def getRoleMembers(ctx):
-    roleMembers = []
-    roleToObserve = channelRoleMap[str(ctx.channel.id)]
+    Members = [] + ctx.message.mentions
+    rolesToObserve = ctx.message.role_mentions
     for member in ctx.channel.members:
         for role in member.roles:
-            if str(role.id) == roleToObserve:
-                roleMembers.append(member)
-    return roleMembers
+            if rolesToObserve.__contains__(role):
+                Members.append(member)
+    return list(set(Members))
 
 
 def getTimeUTC(timeEST):
     est = pytz.timezone('US/Eastern')
     utc = pytz.utc
 
-    if (timeEST.__contains__(":")):
-        minutes = int(timeEST.split(":")[1])
-        hours = int(timeEST.split(":")[0])
-    else:
-        minutes = 0
-        hours = int(timeEST)
+    nowEST = est.localize(datetime.now())
 
-    sTime = est.localize(datetime(datetime.now().year, datetime.now().month,
-                                  datetime.now().day, hour=hours + 12, minute=minutes))
+    minutes = int(timeEST.split(":")[1])
+    hours = int(timeEST.split(":")[0])
+
+    sTime = est.localize(datetime(nowEST.year, nowEST.month,
+                                  nowEST.day, hour=hours, minute=minutes))
 
     datetimeUTC = sTime.astimezone(utc)
 
@@ -171,7 +171,7 @@ async def eventHandler(sTime, text, ctx):
 
     for i, val in enumerate(peopleToSpam):
         for i in range(10):
-            print("Would've sent message to: " + val.name)
+            print("Sent message to: " + val.name)
             sys.stdout.flush()
             await val.send("Time for scrim with " + text + " !!!!!!")
 

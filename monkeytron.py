@@ -60,7 +60,6 @@ async def cancel(ctx):
 
 @bot.command(pass_context=True, name="scrim")
 async def scrim(ctx):
-    time.time()
     commandArgs = ctx.message.clean_content.split(' ')
     if len(ctx.message.mentions) == 0 and len(ctx.message.role_mentions) == 0:
         await ctx.message.channel.send(
@@ -133,7 +132,7 @@ def getTimeUTC(timeEST):
     est = pytz.timezone('US/Eastern')
     utc = pytz.utc
 
-    nowEST = est.localize(datetime.now())
+    nowEST = datetime.now(est)
 
     minutes = int(timeEST.split(":")[1])
     hours = int(timeEST.split(":")[0])

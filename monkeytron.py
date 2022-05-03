@@ -170,10 +170,7 @@ async def eventHandler(sTime, text, ctx):
                     peopleToSpam.remove(member)
 
     for i, val in enumerate(peopleToSpam):
-        for i in range(10):
-            print("Sent message to: " + val.name)
-            sys.stdout.flush()
-            await val.send("Time for scrim with " + text + " !!!!!!")
+        asyncio.get_event_loop().create_task(spamMessage(val, text))
 
     try:
         del tasksDict[text + " @ " + sTime]
@@ -182,6 +179,12 @@ async def eventHandler(sTime, text, ctx):
         print("No such key: '%s'" % ex.message)
         sys.stdout.flush()
 
+
+async def spamMessage(member, text):
+    for i in range(3):
+        print("Trying to send message to: " + member.name)
+        sys.stdout.flush()
+        await member.send("Yo " + member.name + ", time for scrim with " + text + " !!!!!!")
 
 @buttons.click
 async def button_0(ctx):

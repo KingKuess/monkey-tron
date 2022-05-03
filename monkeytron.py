@@ -91,7 +91,7 @@ async def scrim(ctx):
 
 @bot.event
 async def on_ready():
-    print('We have logged in as {0.user}'.format(bot))
+    print('We have logged in as {0.user} v1.0.0'.format(bot))
     sys.stdout.flush()
     await bot.change_presence(activity=discord.Game('Type !help for help'))
 
@@ -138,10 +138,18 @@ def getTimeUTC(timeEST):
     minutes = int(timeEST.split(":")[1])
     hours = int(timeEST.split(":")[0])
 
+    
+
     sTime = est.localize(datetime(nowEST.year, nowEST.month,
                                   nowEST.day, hour=hours, minute=minutes))
 
+
     datetimeUTC = sTime.astimezone(utc)
+
+    print("Now EST: '%s'" % nowEST)
+    print("STime EST: '%s'" % sTime)
+    print("Stime UTC: '%s'" % datetimeUTC)
+    sys.stdout.flush()
 
     return datetimeUTC.timestamp()
 

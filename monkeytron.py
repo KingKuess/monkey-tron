@@ -90,7 +90,7 @@ async def scrim(ctx):
 
 @bot.event
 async def on_ready():
-    print('We have logged in as {0.user} v1.0.0'.format(bot))
+    print('We have logged in as {0.user} v1.0.1'.format(bot))
     sys.stdout.flush()
     await bot.change_presence(activity=discord.Game('Type !help for help'))
 

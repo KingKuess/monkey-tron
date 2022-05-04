@@ -1,6 +1,7 @@
 import asyncio
 from inspect import Arguments
 import re
+from click import pass_context
 import discord
 from discord import flags
 from discord.ext import commands, tasks
@@ -57,6 +58,11 @@ async def cancel(ctx):
         components=components)
     await ctx.message.delete()
 
+@bot.command(pass_context=True, name="react")
+async def react(ctx):
+    await ctx.message.add_reaction('✅')
+    await ctx.message.add_reaction('❌')
+    await ctx.message.add_reaction('📅')
 
 @bot.command(pass_context=True, name="scrim")
 async def scrim(ctx):
@@ -92,7 +98,7 @@ async def scrim(ctx):
 async def on_ready():
     print('We have logged in as {0.user} v1.0.1'.format(bot))
     sys.stdout.flush()
-    await bot.change_presence(activity=discord.Game('Type !help for help'))
+    await bot.change_presence(activity=discord.Game('Type +help for help'))
 
 
 @bot.event

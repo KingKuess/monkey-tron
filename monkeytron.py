@@ -1,7 +1,6 @@
 import asyncio
 from inspect import Arguments
 import re
-from click import pass_context
 import discord
 from discord import flags
 from discord.ext import commands, tasks

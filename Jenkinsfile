@@ -17,7 +17,7 @@ pipeline {
         stage('Run') {
             steps {
                 withCredentials([string(credentialsId: 'token', variable: 'token')]) {
-                    sh 'sudo docker run --name monkeytron-' + env.BRANCH_NAME + ' -e token=$token -d monkey-tron:py'
+                    sh 'sudo docker run --restart=always --name monkeytron-' + env.BRANCH_NAME + ' -e token=$token -d monkey-tron:py'
                 }
             }
         }

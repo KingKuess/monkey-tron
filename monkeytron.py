@@ -14,6 +14,7 @@ from datetime import date, datetime
 import sys
 from dotenv import load_dotenv
 
+version = "v1.0.2"
 load_dotenv()
 
 intents = discord.Intents.default()
@@ -22,9 +23,19 @@ intents.members = True
 
 s = sched.scheduler(time.time, time.sleep)
 
-bot = commands.Bot(command_prefix='+', intents=intents)
+bot = commands.Bot(command_prefix='+', intents=intents, help_command=None)
 buttons = ButtonsClient(bot)
 
+@bot.command(pass_context=True, name="help")
+async def help(ctx):
+    embed = discord.Embed(title="MonkeyTron " + version + " Help", colour=discord.Colour(0x3e038c))
+    embed.add_field(name=f"+help", value="Shows this message\n", inline=False)
+    embed.add_field(name=f"+scrim [HH:MM] [opponent + pings]", value="Schedules a scrim for the same day EST and DMs any pinged roles/members 10 minutes before unless they are in VC or react with ❌\nEX: '+scrim 21:00 Big Dogs @Gorilla'\n", inline=False)
+    embed.add_field(name=f"+react [message]", value="Automatically reacts to the message with ✅ and ❌\n", inline=False)
+    embed.add_field(name=f"+cancel", value="Shows the list of scheduled scrims and allows you to cancel\n", inline=False)
+
+
+    await ctx.send(embed=embed)
 
 @bot.command(pass_context=True)
 async def cancel(ctx):
@@ -95,7 +106,7 @@ async def scrim(ctx):
 
 @bot.event
 async def on_ready():
-    print('We have logged in as {0.user} v1.0.1'.format(bot))
+    print('We have logged in as {0.user}'.format(bot) + ' ' + version)
     sys.stdout.flush()
     await bot.change_presence(activity=discord.Game('Type +help for help'))
 

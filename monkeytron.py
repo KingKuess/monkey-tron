@@ -17,7 +17,7 @@ from dotenv import load_dotenv
 version = "v1.0.2"
 load_dotenv()
 
-intents = discord.Intents.default()
+intents = discord.Intents.all()
 intents.members = True
 
 
